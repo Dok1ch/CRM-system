@@ -7,6 +7,8 @@
     <title>Авторизация</title>
     <link rel="stylesheet" href="style/style.css">
     
+    <!Подключение jquery v3.5.1>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
 </head>
 
 <body>
@@ -47,6 +49,20 @@
         </div>
     </div>
     </div>
+
+    <!Скрипт показа или скрытия пароля>
+    <script>
+        $('body').on('click', '.password-control', function () {
+            if ($('#inputPass').attr('type') == 'password') {
+                $(this).html('Скрыть пароль');
+                $('#inputPass').attr('type', 'text');
+            } else {
+                $(this).html('Показать пароль');
+                $('#inputPass').attr('type', 'password');
+            }
+            return false;
+        });
+    </script>
 
 </body>
 
