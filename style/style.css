@@ -1,0 +1,152 @@
+body {
+    background-image: url(../images/background.png);
+    -moz-background-size: 100%; /* Firefox 3.6+ */
+    -webkit-background-size: 100%; /* Safari 3.1+ и Chrome 4.0+ */
+    -o-background-size: 100%; /* Opera 9.6+ */
+    background-size: 100%; /* Современные браузеры */
+    background-attachment: fixed;
+}
+
+/* Header*/
+.name1 {
+    color: #d9b64c;
+    font-family: "Myriad Pro", Regular;
+    font-size: 27pt;
+    border-radius: 1em;
+    padding: 1em;
+    position: absolute;
+    top: 1%;
+    left: 35%;
+}
+
+.name2 {
+    color: #ffffff;
+    font-family: "Myriad Pro", Regular;
+    font-size: 27pt;
+    position: absolute;
+    top: 9%;
+    left: 38%;
+}
+
+.logo {
+    position: fixed;
+    left: 32%;
+    top: 5%;
+}
+/* Ввод логина и пароля, размещение полей*/
+
+.label {
+    color: #ffffff;
+    font-family: "Myriad Pro", Regular;
+    font-size: 20pt;
+}
+
+#labelEmail {
+    position: fixed;
+    left: 37%;
+    top: 36%;
+}
+
+#labelPassword {
+    position: fixed;
+    left: 37%;
+    top: 46%;
+}
+
+#inputEmail {
+    width: 400px;
+    height: 30px;
+    font-family: "Myriad Pro", Regular;
+    font-size: 14pt;
+    position: fixed;
+    left: 37%;
+    top: 40%;
+    outline: none;
+}
+
+#inputPass {
+    width: 400px;
+    height: 30px;
+    font-family: "Myriad Pro", Regular;
+    font-size: 14pt;
+    position: fixed;
+    left: 37%;
+    top: 50%;
+    outline: none;
+}
+
+.password-control {
+    font-family: "Myriad Pro", Regular;
+    font-size: 14pt;
+    position: fixed;
+    left: 37%;
+    top: 56%;
+    outline: none;
+    text-decoration: none;
+    color:  #d9b64c;
+}
+
+/*Кнопки входа, регистрации и забыли пароль */
+
+#forgotPass{
+    color:  #d9b64c;
+    font-family: "Myriad Pro", Regular;
+    font-size: 14pt;
+    position: fixed;
+    left: 47%;
+    top: 56%;
+    outline: none;
+    text-decoration: none;
+    
+} 
+#log_in {
+    background-color: #ffffff;
+    width: 408px;
+    height: 40px;
+    font-family: "Myriad Pro", Regular;
+    font-size: 20pt;
+    position: fixed;
+    left: 37%;
+    top: 60%;
+    outline: none;
+
+    border-radius:10px;
+    -moz-border-radius:10px;
+    -khtml-border-radius:10px;
+    -webkit-border-radius: 10px;
+
+    transition-duration: 0.4s;
+    -webkit-transition-duration: 0.4s; 
+    -moz-transition-duration: 100%; 
+    -o--transition-duration: 100%; 
+}
+
+#log_in:hover {
+    background-color: #d9b64c;
+}
+
+#registration {
+    background-color: #ffffff;
+    width: 408px;
+    height: 40px;
+    font-family: "Myriad Pro", Regular;
+    font-size: 20pt;
+    position: fixed;
+    left: 37%;
+    top: 67%;
+    outline: none;
+
+    border-radius:10px;
+    -moz-border-radius:10px;
+    -khtml-border-radius:10px;
+    -webkit-border-radius: 10px;
+
+    transition-duration: 0.4s;
+    -webkit-transition-duration: 0.4s; 
+    -moz-transition-duration: 100%; 
+    -o--transition-duration: 100%;
+}
+
+#registration:hover {
+    background-color: #d9b64c;
+}
