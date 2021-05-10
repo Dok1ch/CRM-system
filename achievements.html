@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRM-система</title>
+    <link rel="stylesheet" href="style/style.css">
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+
+    <style>
+        table {
+            font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+            font-size: 14px;
+            border-collapse: collapse;
+            text-align: center;
+        }
+        th, td:first-child {
+            background: #AFCDE7;
+            color: white;
+        }
+        th, td {
+            border-style: solid;
+            border-width: 0 1px 1px 0;
+            border-color: white;
+        }
+        td {
+            background: #D8E6F3;
+        }
+        th:first-child, td:first-child {
+            text-align: left;
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xs-2 col-sm-2 col-md-1 col-lg-1">
+            <div id="wrapper">
+
+                <div class="overlay"></div>
+
+                <!-- Sidebar -->
+                <nav class="navbar navbar-inverse navbar-fixed-top" id="sidebar-wrapper" role="navigation">
+                    <ul class="nav sidebar-nav">
+                        <li class="sidebar-brand">
+                            <a href="#">
+                                Меню
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#">Расписание занятий</a>
+                        </li>
+                        <li>
+                            <a href="#">Статистика</a>
+                        </li>
+                        <li>
+                            <a href="#">Мероприятия</a>
+                        </li>
+                        <li>
+                            <a href="achievements.html">Мои достижения</a>
+                        </li>
+                        <li>
+                            <a href="#">Моя группа</a>
+                        </li>
+                    </ul>
+                </nav>
+                <!-- /#sidebar-wrapper -->
+
+                <!-- Page Content -->
+                <div id="page-content-wrapper">
+                    <button type="button" class="hamburger is-closed" data-toggle="offcanvas">
+                        <span class="hamb-top"></span>
+                        <span class="hamb-middle"></span>
+                        <span class="hamb-bottom"></span>
+                    </button>
+                    <div class="container">
+                        <div class="row text-center">
+                            <div class="col-lg-8 col-lg-offset-2">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- /#page-content-wrapper -->
+
+            </div>
+        </div>
+        <div class="col-xs-10 col-sm-10 col-md-11 col-lg-11">
+            <div class="section">
+                <h3>Мои достижения</h3>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Урок</th>
+                <th scope="col">Достижение</th>
+                <th scope="col">Описание</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+                <th scope="row">1</th>
+                <td>Урок прокрастинации</td>
+                <td>Короткое описание достижения</td>
+                <td>Молодец, много текста описания достижения Молодец, много текста описания достижения Молодец, много текста описания достижения</td>
+            </tr>
+            <tr>
+                <th scope="row">2</th>
+                <td>Некромантия</td>
+                <td>Создал много всего интересного Создал много всего интересногоСоздал много всего интересногоСоздал много всего интересногоСоздал много всего интересного</td>
+                <td>@fat</td>
+            </tr>
+            <tr>
+                <th scope="row">3</th>
+                <td>Магия темных сил</td>
+                <td>the Bird</td>
+                <td>@twitter</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- /#wrapper -->
+<script>
+    $(document).ready(function () {
+        let trigger = $('.hamburger'),
+            overlay = $('.overlay'),
+            isClosed = false;
+
+        trigger.click(function () {
+            hamburger_cross();
+        });
+
+        function hamburger_cross() {
+
+            if (isClosed === true) {
+                overlay.hide();
+                trigger.removeClass('is-open');
+                trigger.addClass('is-closed');
+                isClosed = false;
+            } else {
+                overlay.show();
+                trigger.removeClass('is-closed');
+                trigger.addClass('is-open');
+                isClosed = true;
+            }
+        }
+
+        $('[data-toggle="offcanvas"]').click(function () {
+            $('#wrapper').toggleClass('toggled');
+        });
+    });
+</script>
+
+
+</body>
+</html>
