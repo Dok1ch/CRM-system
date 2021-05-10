@@ -18,8 +18,6 @@ if (empty($email) or empty($password)) //если пользователь не 
     $result = mysqli_query($connection, "SELECT `user_id`, `password` FROM users u WHERE u.email = '$email'"); //извлекаем из базы все данные о пользователе с введенным логином
     $row = mysqli_fetch_array($result);
 
-    echo $row['id_student'];
-    echo $rowPersonal['id_personal'];
     if (empty($row['user_id'])) {
         //если пользователя с введенным логином не существует
         $loginError = "Неправильный логин или пароль.";

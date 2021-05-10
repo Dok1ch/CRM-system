@@ -168,7 +168,7 @@ if (isset($_REQUEST['submit'])) {
 
         <div class="form-group row justify-content-center">
             <div class="col-xs-12 col-sm-9 col-md-7 col-lg-6 col-xl-5">
-                <button type="submit" class="btn btn-success btn-lg btn-block">Регистрация</button>
+                <button type="submit" class="btn btn-success btn-lg btn-block" name="submit">Регистрация</button>
                 <button type="button" class="btn btn-primary btn-lg btn-block" onclick="document.location='index.php'">
                     Назад
                 </button>
