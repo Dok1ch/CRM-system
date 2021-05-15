@@ -1,3 +1,13 @@
+<?php
+
+session_start();
+
+
+if (!empty($_SESSION['role_id']) == 3 AND !empty($_SESSION['user_id'])) {
+    include "include/header_admin.html";
+    ?>
+
+<?php } elseif (empty($_SESSION['user_id'])) { ?>
 <!DOCTYPE html>
 <html lang="ru">
 
@@ -17,7 +27,7 @@
     <title>Регистрация</title>
 </head>
 
-<body>
+<div>
 
 <div class="container">
     <div class="row justify-content-center text-center">
@@ -39,10 +49,12 @@
     </div>
 </div>
 
+
+<?php } ?>
+
 <?php
 
 include 'include/connect.php';
-
 
 if (isset($_POST['surname'])) {
     $surname = filter_var(trim($_POST['surname']), FILTER_SANITIZE_STRING);
@@ -63,6 +75,13 @@ if (isset($_POST['surname'])) {
 if (isset($_POST['role'])) {
     $role = $_POST['role'];
 }
+
+
+if (isset($_POST['patronymic'])) {
+    $patronymic = $_POST['patronymic'];
+
+}
+
 if (isset($_POST['password'])) {
     $password = filter_var(trim($_POST['password']), FILTER_SANITIZE_STRING);
     $password = md5($password);
@@ -91,41 +110,25 @@ if (isset($_REQUEST['submit'])) {
                 $passError = "Пароли не совпадают.";
             } else {
                 switch ($role) {
-                    case 1:
-                        $resultEnd = mysqli_query($connection, "INSERT INTO `users` (`surname`, `name`, `email`, `phone`, `password`, `role_id`) VALUES('$surname', '$name', '$email', '$phone', '$password', '$role')");
+                    case "Студент":
+                        $resultEnd = mysqli_query($connection, "INSERT INTO `users` (`surname`, `name`, `email`, `phone`, `password`, `role_id`) VALUES('$surname', '$name', '$email', '$phone', '$password', (SELECT r.id_role FROM t_role r WHERE r.role = 'Студент'))");
                         if (isset($_REQUEST['submit']) AND $resultEnd) {
                             $smsg = "Регистрация прошла успешно. <a href='index.php'>На главную.</a>";
-                            /*header("Location: index.php");
-                             exit();*/
                         } else {
                             $fsmsg = "Ошибка регистрации!";
                         }
                         break;
-                    case 2:
+                    case "Преподаватель":
 
-                        $result2 = mysqli_query($connection, "INSERT INTO `users` (`surname`, `name`, `email`, `phone`, `password`, `role_id`, `group_id`) VALUES('$surname', '$name', '$email', '$phone', '$password', '$role', NULL)");
+                        $result2 = mysqli_query($connection, "INSERT INTO `users` (`surname`, `name`, `patronymic`, `email`, `phone`, `password`, `role_id`, `group_id`) VALUES('$surname', '$name', '$patronymic', '$email', '$phone', '$password', (SELECT r.id_role FROM t_role r WHERE r.role = 'Преподаватель'), NULL)");
                         if (isset($_REQUEST['submit']) AND $result2) {
                             $smsg = "Регистрация прошла успешно. <a href='index.php'>На главную.</a>";
-                            /*header("Location: index.php");
-                            exit();*/
                         } else {
                             $fsmsg = "Ошибка регистрации!";
                         }
 
                         break;
 
-                    case 3:
-
-                        $result2 = mysqli_query($connection, "INSERT INTO `users` (`surname`, `name`, `email`, `phone`, `password`, `role_id`, `group_id`) VALUES('$surname', '$name', '$email', '$phone', '$password', '$role', NULL)");
-                        if (isset($_REQUEST['submit']) AND $result2) {
-                            $smsg = "Регистрация прошла успешно. <a href='index.php'>На главную.</a>";
-                            /*header("Location: index.php");
-                            exit();*/
-                        } else {
-                            $fsmsg = "Ошибка регистрации!";
-                        }
-
-                        break;
                 }
             }
 
@@ -137,8 +140,14 @@ if (isset($_REQUEST['submit'])) {
 }
 
 
-?>
-
+if (!empty($_SESSION['role_id']) == 3) { ?>
+<div class="col-xs-10 col-sm-10 col-md-11 col-lg-11">
+    <div class="section">
+        <h3>Регистрация преподавателя</h3>
+    </div>
+</div>
+    </div>
+<?php } ?>
 <div class="container">
     <form role="form" class="form-horizontal" method="POST">
         <div class="form-group row justify-content-center">
@@ -161,6 +170,15 @@ if (isset($_REQUEST['submit'])) {
                 <label class="col-form-label">Имя</label>
                 <input type="text" class="form-control" name="name" placeholder="Введите имя">
 
+                <?php
+                if (!empty($_SESSION['role_id']) == 3) {
+                    echo ' <label class="col-form-label">Отчество</label>
+                <input type="text" class="form-control" name="patronymic" placeholder="Введите отчество">';
+                } elseif (empty($_SESSION['user_id'])) {
+
+                }
+                ?>
+
                 <label class="col-form-label">E-mail</label>
                 <input type="email" class="form-control" name="email" placeholder="Введите E-mail">
 
@@ -168,11 +186,13 @@ if (isset($_REQUEST['submit'])) {
                 <input type="text" class="form-control" name="phone" placeholder="Введите номер телефона" id="phone">
 
                 <label class="col-form-label">Роль</label>
-                <select class="form-control" onChange="Selected(this)" name="role">
-                    <option value="1">Студент</option>
-                    <option value="2">Преподаватель</option>
-                    <option value="3">Администратор</option>
-                </select>
+                    <?php
+                    if (!empty($_SESSION['role_id']) == 3 AND !empty($_SESSION['user_id'])) {
+                        echo '<input type="text" name="role" class="form-control" readonly value="Преподаватель">';
+                    } elseif (empty($_SESSION['user_id']) AND empty($_SESSION['role_id'])) {
+                        echo '<input type="text" name="role" class="form-control" readonly value="Студент">';
+                    }
+                    ?>
 
                 <label class="col-form-label">Пароль</label>
                 <input type="password" class="form-control" name="password" placeholder="Введите пароль">
@@ -196,15 +216,23 @@ if (isset($_REQUEST['submit'])) {
 
 </div>
 
-
+<?php if (!empty($_SESSION['role_id']) == 3) { ?>
+</div>
 <script>
     $(document).ready(function () {
         $("#phone").mask("+7 (999) 99-99-999");
     });
 </script>
-
 <script src="js/jquery.maskedinput.min.js"></script>
+<?php
+
+include "include/footer.html"; } else { ?>
+
+
+
 
 </body>
 
 </html>
+<?php } ?>
+

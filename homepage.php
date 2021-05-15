@@ -7,12 +7,65 @@ if (empty($_SESSION['user_id']) or empty($_SESSION['role_id'])) {
     exit();
 }
 
-if($_SESSION['role_id'] == 3) {
+if ($_SESSION['role_id'] == 3) {
     header("Location: admin/view_students.php");
     exit();
 }
 
 include "include/header.html";
+
+include "include/connect.php";
+
+$user_id = $_SESSION['user_id'];
+
+if ($_SESSION['role_id'] == 1) {
+    $result = mysqli_query($connection, "SELECT DISTINCT l.id_lesson, u.name name, u.surname surname, u.patronymic, g.group_name, c.cabinet, l.date, l.theme, l.recommendation FROM t_lesson l, users u, t_group g, t_cabinet c WHERE l.id_group = (SELECT u.group_id FROM users u WHERE u.user_id = '" . $user_id . "' LIMIT 1) AND g.id_group = (SELECT u.group_id FROM users u WHERE u.user_id = '" . $user_id . "' LIMIT 1) AND l.id_personal = u.user_id AND l.id_cabinet = c.id_cabinet");
+
+    $table = '<table class="table table-striped table-3">';
+    $table .= "<thead><tr><th>Преподаватель</th><th>Аудитория</th><th>Дата</th><th>Тема</th><th>Рекомендация</th></tr></thead>";
+
+    while ($lessons_array = mysqli_fetch_assoc($result)) {
+        $table .= '<tr><td data-label="Преподаватель:">' . $lessons_array['surname'] . ' ' . $lessons_array['name'] . ' ' . $lessons_array['patronymic'] . '</td>';
+        $table .= '<td data-label="Аудитория:">' . $lessons_array['cabinet'] . '</td>';
+        $table .= '<td data-label="Дата занятия:">' . $lessons_array['date'] . '</td>';
+        $table .= '<td data-label="Тема урока:">' . $lessons_array['theme'] . '</td>';
+        if (!empty($lessons_array['recommendation'])) {
+            $recommendation = $lessons_array['recommendation'];
+            $table .= '<td data-label="Рекомендация:">' . $recommendation . '</td></tr>';
+        } else {
+            $recommendation = " Нет ";
+            $table .= '<td data-label="Рекомендация:">' . $recommendation . '</td></tr>';
+        }
+
+    }
+    $table .= "</table>";
+
+}elseif ($_SESSION['role_id'] == 2) {
+    $result = mysqli_query($connection, "SELECT DISTINCT l.id_lesson, c.cabinet ,g.group_name, l.date, l.theme, l.recommendation FROM t_lesson l, users u, t_group g, t_cabinet c WHERE l.id_group = g.id_group AND l.id_cabinet = c.id_cabinet AND l.id_personal ='" . $user_id . "'");
+
+    $table = '<table class="table table-striped table-3">';
+    $table .= "<thead><tr><th>Аудитория</th><th>Дата</th><th>Тема</th><th>Рекомендация</th></tr></thead>";
+
+    while ($lessons_array = mysqli_fetch_assoc($result)) {
+        $table .= '<tr><td data-label="Аудитория:">' . $lessons_array['cabinet'] . '</td>';
+        $table .= '<td data-label="Дата занятия:">' . $lessons_array['date'] . '</td>';
+
+        //TODO преподаватель должен заполнять посещение и достижения студентов
+        $table .= '<td data-label="Тема урока:"><a href="#">' . $lessons_array['theme'] . '</td>';
+        if(!empty($lessons_array['recommendation'])) {
+            $recommendation = $lessons_array['recommendation'];
+            $table .= '<td data-label="Рекомендация:">' . $recommendation . '</td></tr>';
+        } else {
+            $recommendation = " Нет ";
+            $table .= '<td data-label="Рекомендация:">' . $recommendation . '</td></tr>';
+        }
+
+    }
+    $table .= "</table>";
+}
+
+
+
 ?>
 
     <div class="col-xs-10 col-sm-10 col-md-11 col-lg-11">
@@ -27,49 +80,13 @@ include "include/header.html";
         <div class="row">
             <div class="text-center">
                 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
-                    <table class="table table-striped">
-                        <tr>
-                            <th>Понедельник</th>
-                            <th>Вторник</th>
-                            <th>Среда</th>
-                            <th>Четверг</th>
-                            <th>Пятница</th>
-                            <th>Суббота</th>
-                        </tr>
-                        <tr>
-                            <td>Microsoft</td>
-                            <td>20.3</td>
-                            <td>30.5</td>
-                            <td>23.5</td>
-                            <td>40.3</td>
-                            <td>40.3</td>
-                        </tr>
-                        <tr>
-                            <td>Google</td>
-                            <td>50.2</td>
-                            <td>40.63</td>
-                            <td>45.23</td>
-                            <td>39.3</td>
-                            <td>40.3</td>
+                    <label></label>
 
-                        </tr>
-                        <tr>
-                            <td>Apple</td>
-                            <td>25.4</td>
-                            <td>30.2</td>
-                            <td>33.3</td>
-                            <td>36.7</td>
-                            <td>40.3</td>
-                        </tr>
-                        <tr>
-                            <td>IBM</td>
-                            <td>20.4</td>
-                            <td>15.6</td>
-                            <td>22.3</td>
-                            <td>29.3</td>
-                            <td>40.3</td>
-                        </tr>
-                    </table>
+                    <?php
+                        echo $table;
+
+
+                    ?>
                 </div>
             </div>
         </div>

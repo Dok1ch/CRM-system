@@ -177,36 +177,42 @@ if ($_SESSION['role_id'] == 3) {
                     <div class="col-sm-2 col-md-3 col-lg-3"></div>
                 </div>
 
-                <div class="form-group row text-left">
-                    <div class="col-sm-2 col-md-3 col-lg-3"></div>
-                    <div class="col-sm-8 col-md-6 col-lg-6">
-                        <label>Группа</label>
-                        <?php
-                        if ($_SESSION['role_id'] == 3) {
+                <?php
+                if ($_SESSION['role_id'] != 2) { ?>
+                    <div class="form-group row text-left">
+                        <div class="col-sm-2 col-md-3 col-lg-3"></div>
+                        <div class="col-sm-8 col-md-6 col-lg-6">
+                            <label>Группа</label>
+                            <?php
+                            if ($_SESSION['role_id'] == 3) {
 
-                            $get_group = mysqli_query($connection, "SELECT * FROM t_group");
+                                $get_group = mysqli_query($connection, "SELECT * FROM t_group");
 
-                            echo '<select class="form-control" name="group">';
+                                echo '<select class="form-control" name="group">';
 
-                            while ($row_group = mysqli_fetch_assoc($get_group)) {
-                                if ($group_id == $row_group['id_group']) {
-                                    echo '<option value="' . $row_group['id_group'] . '" selected>' . $row_group['group_name'] . '</option>';
-                                } else {
-                                    echo '<option value="' . $row_group['id_group'] . '">' . $row_group['group_name'] . '</option>';
+                                while ($row_group = mysqli_fetch_assoc($get_group)) {
+                                    if ($group_id == $row_group['id_group']) {
+                                        echo '<option value="' . $row_group['id_group'] . '" selected>' . $row_group['group_name'] . '</option>';
+                                    } else {
+                                        echo '<option value="' . $row_group['id_group'] . '">' . $row_group['group_name'] . '</option>';
+                                    }
+
                                 }
 
-                            }
+                                echo '</select>';
 
-                            echo '</select>';
+                            } else {
+                                global $group_name;
+                                echo '<input type="text" class="form-control" readonly name="group" value="' . $group_name . '">';
+                            } ?>
 
-                        } else {
-                            global $group_name;
-                            echo '<input type="text" class="form-control" readonly name="group" value="' . $group_name . '">';
-                        } ?>
-
+                        </div>
+                        <div class="col-sm-2 col-md-3 col-lg-3"></div>
                     </div>
-                    <div class="col-sm-2 col-md-3 col-lg-3"></div>
-                </div>
+                <?php }
+
+                ?>
+
 
                 <div class="form-group row">
                     <div class="form-check white-font">

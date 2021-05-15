@@ -20,7 +20,7 @@ if ($_SESSION['role_id'] == 1 or $_SESSION['role_id'] == 2 or $_SESSION['role_id
     $resultTeacher = mysqli_query($connection, "SELECT * FROM users u, t_role r WHERE u.role_id = r.id_role AND r.role = 'Преподаватель'");
     $listTeacher = '<select class="form-control" name="teacher">';
     while ($teacher_array = mysqli_fetch_assoc($resultTeacher)) {
-        $listTeacher .= '<option value="' . $teacher_array['user_id'] . '">' . $teacher_array['name'] . '</option>';
+        $listTeacher .= '<option value="' . $teacher_array['user_id'] . '">' . $teacher_array['surname'] . ' ' . $teacher_array['name'] . ' ' . $teacher_array['patronymic'] . '</option>';
     }
     $listTeacher .= "</select>";
 

@@ -59,35 +59,35 @@ include "include/header.html";
                         $passError = "Пароли должны совпадать.";
                     }
                 } else {
+                    if (empty($oldPassword) or empty($newPassword) or empty($repeatPassword)) {
+                        $nullError = "Заполните все поля.";
+                    } else {
 
+                        $resultPass = mysqli_query($connection, "SELECT `password` FROM `users` WHERE user_id = '$user_id'");
+                        $rowPass = mysqli_fetch_array($resultPass);
+
+                        //Пароль юзера в бд
+                        $passwordBD = $rowPass['password'];
+
+                        //Если старый пароль совпал, сверяем новый пароль
+                        if ($passwordBD == $oldPassword) {
+                            if ($newPassword == $repeatPassword) {
+                                $result = mysqli_query($connection, "UPDATE users SET `password` = '$newPassword'  WHERE users.user_id = '$user_id'");
+
+                                if (isset($_REQUEST['submit'])) {
+                                    $smsg = "Пароль успешно изменен!";
+                                }
+                            } else {
+                                $passError = "Пароли должны совпадать.";
+                            }
+                        } else {
+                            $checkPass = "Прежний пароль введен неправильно.";
+                        }
+                    }
                 }
 
             } else {
-                if (empty($oldPassword) or empty($newPassword) or empty($repeatPassword)) {
-                    $nullError = "Заполните все поля.";
-                } else {
 
-                    $resultPass = mysqli_query($connection, "SELECT `password` FROM `users` WHERE user_id = '$user_id'");
-                    $rowPass = mysqli_fetch_array($resultPass);
-
-                    //Пароль юзера в бд
-                    $passwordBD = $rowPass['password'];
-
-                    //Если старый пароль совпал, сверяем новый пароль
-                    if ($passwordBD == $oldPassword) {
-                        if ($newPassword == $repeatPassword) {
-                            $result = mysqli_query($connection, "UPDATE users SET `password` = '$newPassword'  WHERE users.user_id = '$user_id'");
-
-                            if (isset($_REQUEST['submit'])) {
-                                $smsg = "Пароль успешно изменен!";
-                            }
-                        } else {
-                            $passError = "Пароли должны совпадать.";
-                        }
-                    } else {
-                        $checkPass = "Прежний пароль введен неправильно.";
-                    }
-                }
             }
 
 
