@@ -90,12 +90,11 @@ html {
 .nav .open > a:focus {
 
 
-
 }
 
 /* Wrappers */
+
 #wrapper {
-    padding-left: 0;
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
@@ -395,4 +394,36 @@ html {
 }
 
 /* Конец блока настройки выпадающего меню*/
+
+
+/* Начало блока стилизации таблицы */
+
+table {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 14px;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+th {
+    background: #AFCDE7;
+    color: white;
+    padding: 10px 20px;
+}
+
+th, td {
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    border-color: white;
+}
+
+td {
+    background: #D8E6F3;
+}
+
+th:first-child, td:first-child {
+    text-align: left;
+}
+
+/* Конец блока стилизация таблицы */
 

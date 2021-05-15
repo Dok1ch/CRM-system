@@ -1,52 +1,60 @@
 <?php
 // Проверяем, пусты ли переменные email и id пользователя
 session_start();
-if (empty($_SESSION['user_id'])) {
+if (empty($_SESSION['user_id']) or empty($_SESSION['role_id'])) {
     // Если пусты, то перемещаемся на форму авторизации
     header("Location: index.php");
 }
 include "include/connect.php";
 
-if(!empty($_SESSION['user_id'])) {
-    $user_id = $_SESSION['user_id'];
+$user_id = $_SESSION['user_id'];
 
-    //извлекаем из базы все данные о пользователе с введенным логином
-    $result = mysqli_query($connection, "SELECT * FROM users u WHERE u.user_id = ' $user_id 'LIMIT 1");
+if ($_SESSION['role_id'] == 3) {
+    $user_id = $_GET['user_id'];
 
 }
-
+//извлекаем из базы все данные о пользователе с введенным логином
+$result = mysqli_query($connection, "SELECT u.user_id, u.surname, u.name, u.email, u.phone, u.role_id, g.group_name, g.id_group FROM users u, t_group g WHERE  u.user_id = '$user_id' LIMIT 1");
 
 $row = mysqli_fetch_array($result);
-if (empty($row['password'])) {
-    //если пользователя с введенным логином не существует
-    $loginError = "Неправильный логин или пароль.";
-} else {
 
-    $name = $row['name'];
-    $surname = $row['surname'];
-    $email = $row['email'];
-    $phone = $row['phone'];
-    $role = $row['role_id'];
+$name = $row['name'];
+$surname = $row['surname'];
+$email = $row['email'];
+$phone = $row['phone'];
+$role = $row['role_id'];
+$group_name = $row['group_name'];
+$group_id = $row['id_group'];
 
-    switch ($role) {
-        case 1:
-            $role = "Студент";
-            break;
-        case 2:
-            $role = "Преподаватель";
-            break;
-    }
+switch ($role) {
+    case 1:
+        $role = "Студент";
+        break;
+    case 2:
+        $role = "Преподаватель";
+        break;
+
 
 }
 
-
-include "include/header.html";
-?>
+if ($_SESSION['role_id'] == 3) {
+    include "include/header_admin.html";
+    ?>
+    <div class="col-xs-10 col-sm-10 col-md-11 col-lg-11">
+        <div class="section">
+            <h3>Профиль студента</h3>
+        </div>
+    </div>
+<?php } else {
+    include "include/header.html";
+    ?>
     <div class="col-xs-10 col-sm-10 col-md-11 col-lg-11">
         <div class="section">
             <h3>Мой профиль</h3>
         </div>
     </div>
+<?php } ?>
+
 
     <!--Этот див должен быть в каждом файле, смотри header.html-->
     </div>
@@ -58,35 +66,44 @@ include "include/header.html";
             include "include/connect.php";
 
 
-            if (isset($_POST['surname'])) {
-                $surname = filter_var(trim($_POST['surname']), FILTER_SANITIZE_STRING);
-            }
+            if (isset($_REQUEST['submit'])) {
+                if (isset($_POST['surname'])) {
+                    $surname = filter_var(trim($_POST['surname']), FILTER_SANITIZE_STRING);
+                }
 
-            if (isset($_POST['name'])) {
-                $name = filter_var(trim($_POST['name']), FILTER_SANITIZE_STRING);
-            }
+                if (isset($_POST['name'])) {
+                    $name = filter_var(trim($_POST['name']), FILTER_SANITIZE_STRING);
+                }
 
-            if (isset($_POST['email'])) {
-                $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_STRING);
-            }
+                if (isset($_POST['email'])) {
+                    $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_STRING);
+                }
 
-            if (isset($_POST['phone'])) {
-                $phone = trim($_POST['phone']);
-            }
+                if (isset($_POST['phone'])) {
+                    $phone = trim($_POST['phone']);
+                }
 
-            if (isset($_POST['role'])) {
-                $role = $_POST['role'];
-            }
+                if (isset($_POST['role'])) {
+                    $role = $_POST['role'];
+                }
 
-            //заносим введенный пользователем пароль в переменную $password, если он пустой, то уничтожаем переменную
-            if (empty($surname) or empty($name) or empty($email)) //если пользователь не ввел логин или пароль, то выдаем ошибку и останавливаем скрипт
-            {
-                $nullError = "Заполните все поля.";
-            } else {
-                $result = mysqli_query($connection, "UPDATE users SET `name` = '$name', `surname` = '$surname', `phone` = '$phone', `email` = '$email' WHERE users.user_id = '$user_id'");
+                if (isset($_POST['group'])) {
+                    $group_id = $_POST['group'];
+                }
 
-                if(isset($_REQUEST['submit'])) {
-                    $smsg = "Профиль успешно сохранен!";
+                //заносим введенный пользователем пароль в переменную $password, если он пустой, то уничтожаем переменную
+                if (empty($surname) or empty($name) or empty($email)) //если пользователь не ввел логин или пароль, то выдаем ошибку и останавливаем скрипт
+                {
+                    $nullError = "Заполните все поля.";
+                } else {
+
+                    $user_id = mysqli_real_escape_string($connection, $user_id);
+
+                    $result = mysqli_query($connection, "UPDATE users SET `name` = '$name', `surname` = '$surname', `phone` = '$phone', `email` = '$email', `group_id` = '$group_id' WHERE users.user_id = '$user_id'");
+
+                    if ($result) {
+                        $smsg = "Профиль успешно сохранен!";
+                    }
                 }
             }
 
@@ -98,21 +115,24 @@ include "include/header.html";
                     <div class="form-group row text-center">
                         <div class="col-sm-2 col-md-3 col-lg-3"></div>
                         <?php if (isset($nullError)) { ?>
-                            <div class="col-xs-12 col-sm-8 col-md-6 col-lg-6 alert alert-danger" role="alert"> <?php echo $nullError; ?> </div> <?php } ?>
+                            <div class="col-xs-12 col-sm-8 col-md-6 col-lg-6 alert alert-danger"
+                                 role="alert"> <?php echo $nullError; ?> </div> <?php } ?>
                         <div class="col-sm-2 col-md-3 col-lg-3"></div>
                     </div>
 
                     <div class="form-group row text-center">
                         <div class="col-sm-2 col-md-3 col-lg-3"></div>
                         <?php if (isset($smsg)) { ?>
-                            <div class="col-xs-12 col-sm-8 col-md-6 col-lg-6 alert alert-success" role="alert"> <?php echo $smsg; ?> </div> <?php } ?>
+                            <div class="col-xs-12 col-sm-8 col-md-6 col-lg-6 alert alert-success"
+                                 role="alert"> <?php echo $smsg; ?> </div> <?php } ?>
                         <div class="col-sm-2 col-md-3 col-lg-3"></div>
                     </div>
 
                     <div class="col-sm-2 col-md-3 col-lg-3"></div>
                     <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3">
                         <label>Фамилия</label>
-                        <input type="text" class="form-control" placeholder="Фамилия" readonly id="surname" name="surname"
+                        <input type="text" class="form-control" placeholder="Фамилия" readonly id="surname"
+                               name="surname"
                                value="<?php global $surname;
                                print $surname; ?>">
                     </div>
@@ -161,7 +181,29 @@ include "include/header.html";
                     <div class="col-sm-2 col-md-3 col-lg-3"></div>
                     <div class="col-sm-8 col-md-6 col-lg-6">
                         <label>Группа</label>
-                        <input type="text" class="form-control">
+                        <?php
+                        if ($_SESSION['role_id'] == 3) {
+
+                            $get_group = mysqli_query($connection, "SELECT * FROM t_group");
+
+                            echo '<select class="form-control" name="group">';
+
+                            while ($row_group = mysqli_fetch_assoc($get_group)) {
+                                if ($group_id == $row_group['id_group']) {
+                                    echo '<option value="' . $row_group['id_group'] . '" selected>' . $row_group['group_name'] . '</option>';
+                                } else {
+                                    echo '<option value="' . $row_group['id_group'] . '">' . $row_group['group_name'] . '</option>';
+                                }
+
+                            }
+
+                            echo '</select>';
+
+                        } else {
+                            global $group_name;
+                            echo '<input type="text" class="form-control" readonly name="group" value="' . $group_name . '">';
+                        } ?>
+
                     </div>
                     <div class="col-sm-2 col-md-3 col-lg-3"></div>
                 </div>
@@ -175,15 +217,18 @@ include "include/header.html";
                 </div>
 
                 <div class="form-group row white-font">
-                        <div class="col-sm-2 col-md-3 col-lg-3"></div>
-                        <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3">
-                            <button type="button" class="btn btn-lg btn-block btn-info" onclick="document.location='changePassword.php'">Изменить пароль</button>
-                        </div>
+                    <div class="col-sm-2 col-md-3 col-lg-3"></div>
+                    <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3">
+                        <button type="button" class="btn btn-lg btn-block btn-info"
+                                onclick="document.location='changePassword.php'">Изменить пароль
+                        </button>
+                    </div>
 
-                        <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3">
-                            <button type="submit" name="submit" class="btn btn-lg btn-block btn-success">Сохранить профиль</button>
-                        </div>
-                        <div class="col-sm-2 col-md-3 col-lg-3"></div>
+                    <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3">
+                        <button type="submit" name="submit" class="btn btn-lg btn-block btn-success">Сохранить профиль
+                        </button>
+                    </div>
+                    <div class="col-sm-2 col-md-3 col-lg-3"></div>
 
                 </div>
 

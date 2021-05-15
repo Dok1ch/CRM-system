@@ -1,5 +1,12 @@
 <?php
 session_start();
+
+if (!empty($_SESSION['user_id']) or !empty($_SESSION['role_id'])) {
+    // Если пусты, то перемещаемся на форму авторизации
+    header("Location: homepage.php");
+    exit();
+}
+
 include "include/connect.php";
 //  вся процедура работает на сессиях. Именно в ней хранятся данные  пользователя, пока он находится на сайте. Очень важно запустить их в  самом начале странички!!!
 if (isset($_POST['email'])) {
@@ -15,7 +22,7 @@ if (empty($email) or empty($password)) //если пользователь не 
     $loginError = "Неправильный логин или пароль.";
 } else {
 
-    $result = mysqli_query($connection, "SELECT `user_id`, `password` FROM users u WHERE u.email = '$email'"); //извлекаем из базы все данные о пользователе с введенным логином
+    $result = mysqli_query($connection, "SELECT `user_id`, `password`,`role_id` FROM users u WHERE u.email = '$email'"); //извлекаем из базы все данные о пользователе с введенным логином
     $row = mysqli_fetch_array($result);
 
     if (empty($row['user_id'])) {
@@ -28,9 +35,8 @@ if (empty($email) or empty($password)) //если пользователь не 
 
                 //если пароли совпадают, то запускаем пользователю сессию! Можете его поздравить, он вошел!
                 $_SESSION['user_id'] = $row['user_id'];
-
+                $_SESSION['role_id'] = $row['role_id'];
                 //эти данные очень часто используются, вот их и будет "носить с собой" вошедший пользователь
-                $success = "Вы успешно вошли на сайт! <a href=''>Главная страница</a>";
 
                 header("Location: homepage.php");
                 exit();

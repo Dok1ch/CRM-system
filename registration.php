@@ -78,41 +78,58 @@ if (isset($_REQUEST['submit'])) {
         $nullError = "Заполните все поля.";
     } else {
 
-        switch ($role) {
-            case 1:
-                $result = mysqli_query($connection, "SELECT user_id FROM users u WHERE u.email='$email'");
-                $row = mysqli_fetch_array($result);
-                if (!empty($row['user_id'])) {
-                    $regError = "Пользователь с таким email уже зарегистрирован.";
-                } elseif ($password != $passwordRepeat) {
-                    $passError = "Пароли не совпадают.";
-                } else {
-                    $resultEnd = mysqli_query($connection, "INSERT INTO `users` (`surname`, `name`, `email`, `phone`, `password`, `role_id`) VALUES('$surname', '$name', '$email', '$phone', '$password', '$role')");
-                    if ($resultEnd == 'TRUE') {
-                        $smsg = "Регистрация прошла успешно. <a href='index.php'>На главную.</a>";
-                        /*header("Location: index.php");
-                         exit();*/
-                    } else {
-                        $fsmsg = "Ошибка регистрации!";
-                    }
+        //Экранирование переменной $email
+        $email = mysqli_real_escape_string($connection, $email);
+
+        $result = mysqli_query($connection, "SELECT u.user_id FROM users u WHERE u.email='$email' LIMIT 1");
+        $row = mysqli_fetch_array($result);
+
+        if (!empty($row['user_id']) or $email == NULL) {
+            $regError = "Пользователь с таким email уже зарегистрирован.";
+        } else {
+            if ($password != $passwordRepeat) {
+                $passError = "Пароли не совпадают.";
+            } else {
+                switch ($role) {
+                    case 1:
+                        $resultEnd = mysqli_query($connection, "INSERT INTO `users` (`surname`, `name`, `email`, `phone`, `password`, `role_id`) VALUES('$surname', '$name', '$email', '$phone', '$password', '$role')");
+                        if (isset($_REQUEST['submit']) AND $resultEnd) {
+                            $smsg = "Регистрация прошла успешно. <a href='index.php'>На главную.</a>";
+                            /*header("Location: index.php");
+                             exit();*/
+                        } else {
+                            $fsmsg = "Ошибка регистрации!";
+                        }
+                        break;
+                    case 2:
+
+                        $result2 = mysqli_query($connection, "INSERT INTO `users` (`surname`, `name`, `email`, `phone`, `password`, `role_id`, `group_id`) VALUES('$surname', '$name', '$email', '$phone', '$password', '$role', NULL)");
+                        if (isset($_REQUEST['submit']) AND $result2) {
+                            $smsg = "Регистрация прошла успешно. <a href='index.php'>На главную.</a>";
+                            /*header("Location: index.php");
+                            exit();*/
+                        } else {
+                            $fsmsg = "Ошибка регистрации!";
+                        }
+
+                        break;
+
+                    case 3:
+
+                        $result2 = mysqli_query($connection, "INSERT INTO `users` (`surname`, `name`, `email`, `phone`, `password`, `role_id`, `group_id`) VALUES('$surname', '$name', '$email', '$phone', '$password', '$role', NULL)");
+                        if (isset($_REQUEST['submit']) AND $result2) {
+                            $smsg = "Регистрация прошла успешно. <a href='index.php'>На главную.</a>";
+                            /*header("Location: index.php");
+                            exit();*/
+                        } else {
+                            $fsmsg = "Ошибка регистрации!";
+                        }
+
+                        break;
                 }
-            case 2:
-                $result = mysqli_query($connection, "SELECT user_id FROM users u WHERE u.email='$email'");
-                $row = mysqli_fetch_array($result);
-                if (!empty($row['user_id'])) {
-                    $regError = "Пользователь с таким email уже зарегистрирован.";
-                } elseif ($password != $passwordRepeat) {
-                    $passError = "Пароли не совпадают.";
-                } else {
-                    $result2 = mysqli_query($connection, "INSERT INTO `users` (`surname`, `name`, `email`, `phone`, `password`, `role_id`) VALUES('$surname', '$name', '$email', '$phone', '$password', '$role')");
-                    if (isset($_REQUEST['submit'])) {
-                        $smsg = "Регистрация прошла успешно. <a href='index.php'>На главную.</a>";
-                        /*header("Location: index.php");
-                        exit();*/
-                    } else {
-                        $fsmsg = "Ошибка регистрации!";
-                    }
-                }
+            }
+
+
         }
 
 
@@ -154,6 +171,7 @@ if (isset($_REQUEST['submit'])) {
                 <select class="form-control" onChange="Selected(this)" name="role">
                     <option value="1">Студент</option>
                     <option value="2">Преподаватель</option>
+                    <option value="3">Администратор</option>
                 </select>
 
                 <label class="col-form-label">Пароль</label>
