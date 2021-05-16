@@ -14,7 +14,7 @@ if ($_SESSION['role_id'] == 3) {
 
 }
 //извлекаем из базы все данные о пользователе с введенным логином
-$result = mysqli_query($connection, "SELECT u.user_id, u.surname, u.name, u.email, u.phone, u.role_id, g.group_name, g.id_group FROM users u, t_group g WHERE  u.user_id = '$user_id' LIMIT 1");
+$result = mysqli_query($connection, "SELECT u.user_id, u.surname, u.name, u.patronymic, u.email, u.phone, u.role_id, g.group_name, g.id_group FROM users u, t_group g WHERE  u.user_id = '$user_id' LIMIT 1");
 
 $row = mysqli_fetch_array($result);
 
@@ -25,6 +25,7 @@ $phone = $row['phone'];
 $role = $row['role_id'];
 $group_name = $row['group_name'];
 $group_id = $row['id_group'];
+$patronymic = $row['patronymic'];
 
 switch ($role) {
     case 1:
@@ -45,7 +46,15 @@ if ($_SESSION['role_id'] == 3) {
             <h3>Профиль студента</h3>
         </div>
     </div>
-<?php } else {
+<?php } elseif ($_SESSION['role_id'] == 2) {
+    include "include/header_teacher.html";
+    ?>
+    <div class="col-xs-10 col-sm-10 col-md-11 col-lg-11">
+        <div class="section">
+            <h3>Мой профиль</h3>
+        </div>
+    </div>
+<?php } elseif ($_SESSION['role_id'] == 1) {
     include "include/header.html";
     ?>
     <div class="col-xs-10 col-sm-10 col-md-11 col-lg-11">
@@ -74,6 +83,7 @@ if ($_SESSION['role_id'] == 3) {
                 if (isset($_POST['name'])) {
                     $name = filter_var(trim($_POST['name']), FILTER_SANITIZE_STRING);
                 }
+
 
                 if (isset($_POST['email'])) {
                     $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_STRING);
@@ -131,25 +141,46 @@ if ($_SESSION['role_id'] == 3) {
                     <div class="col-sm-2 col-md-3 col-lg-3"></div>
                     <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3">
                         <label>Фамилия</label>
-                        <input type="text" class="form-control" placeholder="Фамилия" readonly id="surname"
+                        <input type="text" class="form-control input-ru" maxlength="98" placeholder="Фамилия" readonly id="surname"
                                name="surname"
                                value="<?php global $surname;
                                print $surname; ?>">
                     </div>
                     <div class="col-xs-12 col-sm-4 col-md-3 col-lg-3">
                         <label>Имя</label>
-                        <input type="text" class="form-control" placeholder="Имя" readonly id="name" name="name"
+                        <input type="text" class="form-control input-ru" maxlength="98" placeholder="Имя" readonly id="name" name="name"
                                value="<?php global $name;
                                print $name; ?>">
                     </div>
                     <div class="col-sm-2 col-md-3 col-lg-3"></div>
+
+                    <script>
+                        $('body').on('input', '.input-ru', function(){
+                            this.value = this.value.replace(/[^а-яё\s]/gi, '');
+                        });
+                    </script>
                 </div>
+
+                <?php
+                if ($_SESSION['role_id'] == 3 or $_SESSION['user_id'] == 2) {
+                   ?> <div class="form-group row text-left">
+                        <div class="col-sm-2 col-md-3 col-lg-3"></div>
+                        <div class="col-sm-8 col-md-6 col-lg-6"><label>Отчество</label>
+                <input type="text" class="form-control" name="patronymic" readonly placeholder="Отчество" maxlength="98" maxlength="98" value="<?php global $patronymic;
+                               print $patronymic; ?>">
+                        </div>
+                        <div class="col-sm-2 col-md-3 col-lg-3"></div>
+                    </div>
+               <?php } elseif (empty($_SESSION['user_id'])) {
+
+                }
+                ?>
 
                 <div class="form-group row text-left">
                     <div class="col-sm-2 col-md-3 col-lg-3"></div>
                     <div class="col-sm-8 col-md-6 col-lg-6">
                         <label>Email</label>
-                        <input type="email" class="form-control" placeholder="Email" readonly id="email" name="email"
+                        <input type="email" class="form-control" maxlength="98" placeholder="Email" readonly id="email" name="email"
                                value="<?php global $email;
                                print $email; ?>">
                     </div>
@@ -171,7 +202,7 @@ if ($_SESSION['role_id'] == 3) {
                     <div class="col-sm-2 col-md-3 col-lg-3"></div>
                     <div class="col-sm-8 col-md-6 col-lg-6">
                         <label>Роль</label>
-                        <input type="text" class="form-control" readonly name="role" value="<?php global $role;
+                        <input type="text"  class="form-control" readonly name="role" value="<?php global $role;
                         print $role; ?>">
                     </div>
                     <div class="col-sm-2 col-md-3 col-lg-3"></div>
@@ -248,12 +279,14 @@ if ($_SESSION['role_id'] == 3) {
             var surname = document.getElementById('surname');
             var phone = document.getElementById('phone');
             var email = document.getElementById('email');
+            var patronymic = document.getElementById('patronymic');
 
             if (f.agree.checked) {
                 email.removeAttribute('readonly');
                 surname.removeAttribute('readonly');
                 phone.removeAttribute('readonly');
                 name.removeAttribute('readonly');
+                patronymic.removeAttribute('readonly');
             }
             // В противном случае вновь блокируем редактирование
             else {
@@ -261,6 +294,7 @@ if ($_SESSION['role_id'] == 3) {
                 surname.setAttribute('readonly', 'readonly');
                 phone.setAttribute('readonly', 'readonly');
                 name.setAttribute('readonly', 'readonly');
+                patronymic.setAttribute('readonly', 'readonly');
             }
         }
     </script>
@@ -275,6 +309,5 @@ if ($_SESSION['role_id'] == 3) {
 <?php
 
 include "include/footer.html";
-
 
 ?>

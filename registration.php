@@ -164,25 +164,31 @@ if (!empty($_SESSION['role_id']) == 3) { ?>
                 <?php if (isset($smsg)) { ?>
                     <div class="alert alert-success" role="alert"> <?php echo $smsg; ?> </div> <?php } ?>
 
-                <label for="labelSurname" class="col-form-label">Фамилия</label>
-                <input type="text" class="form-control" name="surname" placeholder="Введите фамилию">
+                <label for="labelSurname" class="col-form-label">Фамилия*</label>
+                <input type="text" class="form-control input-ru" name="surname" placeholder="Введите фамилию" maxlength="98">
 
-                <label class="col-form-label">Имя</label>
-                <input type="text" class="form-control" name="name" placeholder="Введите имя">
+                <label class="col-form-label">Имя*</label>
+                <input type="text" class="form-control input-ru" name="name" placeholder="Введите имя" maxlength="98">
+
+                <script>
+                    $('body').on('input', '.input-ru', function(){
+                        this.value = this.value.replace(/[^а-яё\s]/gi, '');
+                    });
+                </script>
 
                 <?php
                 if (!empty($_SESSION['role_id']) == 3) {
                     echo ' <label class="col-form-label">Отчество</label>
-                <input type="text" class="form-control" name="patronymic" placeholder="Введите отчество">';
+                <input type="text" class="form-control" name="patronymic" placeholder="Введите отчество" maxlength="98">';
                 } elseif (empty($_SESSION['user_id'])) {
 
                 }
                 ?>
 
-                <label class="col-form-label">E-mail</label>
-                <input type="email" class="form-control" name="email" placeholder="Введите E-mail">
+                <label class="col-form-label">E-mail*</label>
+                <input type="email" class="form-control" name="email" placeholder="Введите E-mail" maxlength="98">
 
-                <label class="col-form-label">Телефон</label>
+                <label class="col-form-label">Телефон*</label>
                 <input type="text" class="form-control" name="phone" placeholder="Введите номер телефона" id="phone">
 
                 <label class="col-form-label">Роль</label>
@@ -194,12 +200,11 @@ if (!empty($_SESSION['role_id']) == 3) { ?>
                     }
                     ?>
 
-                <label class="col-form-label">Пароль</label>
-                <input type="password" class="form-control" name="password" placeholder="Введите пароль">
+                <label class="col-form-label">Пароль*</label>
+                <input type="password" class="form-control" name="password" placeholder="Введите пароль" maxlength="98">
 
-                <label class="col-form-label">Повторите пароль</label>
-                <input type="password" class="form-control" name="passwordRepeat" placeholder="Повторите пароль">
-
+                <label class="col-form-label">Повторите пароль*</label>
+                <input type="password" class="form-control" name="passwordRepeat" placeholder="Повторите пароль" maxlength="98">
 
             </div>
         </div>
@@ -223,13 +228,13 @@ if (!empty($_SESSION['role_id']) == 3) { ?>
         $("#phone").mask("+7 (999) 99-99-999");
     });
 </script>
+
 <script src="js/jquery.maskedinput.min.js"></script>
+
+
 <?php
 
 include "include/footer.html"; } else { ?>
-
-
-
 
 </body>
 

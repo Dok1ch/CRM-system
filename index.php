@@ -7,46 +7,49 @@ if (!empty($_SESSION['user_id']) or !empty($_SESSION['role_id'])) {
     exit();
 }
 
-include "include/connect.php";
+if (isset($_REQUEST['submit'])) {
+    include "include/connect.php";
 //  вся процедура работает на сессиях. Именно в ней хранятся данные  пользователя, пока он находится на сайте. Очень важно запустить их в  самом начале странички!!!
-if (isset($_POST['email'])) {
-    $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_STRING);
-}
-if (isset($_POST['password'])) {
-    $password = filter_var(trim($_POST['password']), FILTER_SANITIZE_STRING);
-    $password = md5($password);
-}
+    if (isset($_POST['email'])) {
+        $email = filter_var(trim($_POST['email']), FILTER_SANITIZE_STRING);
+    }
+    if (isset($_POST['password'])) {
+        $password = filter_var(trim($_POST['password']), FILTER_SANITIZE_STRING);
+        $password = md5($password);
+    }
 
-if (empty($email) or empty($password)) //если пользователь не ввел логин или пароль, то выдаем ошибку и останавливаем скрипт
-{
-    $loginError = "Неправильный логин или пароль.";
-} else {
-
-    $result = mysqli_query($connection, "SELECT `user_id`, `password`,`role_id` FROM users u WHERE u.email = '$email'"); //извлекаем из базы все данные о пользователе с введенным логином
-    $row = mysqli_fetch_array($result);
-
-    if (empty($row['user_id'])) {
-        //если пользователя с введенным логином не существует
+    if (empty($email) or empty($password)) //если пользователь не ввел логин или пароль, то выдаем ошибку и останавливаем скрипт
+    {
         $loginError = "Неправильный логин или пароль.";
     } else {
-        if(!empty($row['user_id'])) {
-            //если существует, то сверяем пароли
-            if ($row['password'] == $password) {
 
-                //если пароли совпадают, то запускаем пользователю сессию! Можете его поздравить, он вошел!
-                $_SESSION['user_id'] = $row['user_id'];
-                $_SESSION['role_id'] = $row['role_id'];
-                //эти данные очень часто используются, вот их и будет "носить с собой" вошедший пользователь
+        $result = mysqli_query($connection, "SELECT `user_id`, `password`,`role_id` FROM users u WHERE u.email = '$email'"); //извлекаем из базы все данные о пользователе с введенным логином
+        $row = mysqli_fetch_array($result);
 
-                header("Location: homepage.php");
-                exit();
-            } else {
-                $loginError = "Неправильный логин или пароль.";
+        if (empty($row['user_id'])) {
+            //если пользователя с введенным логином не существует
+            $loginError = "Неправильный логин или пароль.";
+        } else {
+            if (!empty($row['user_id'])) {
+                //если существует, то сверяем пароли
+                if ($row['password'] == $password) {
+
+                    //если пароли совпадают, то запускаем пользователю сессию! Можете его поздравить, он вошел!
+                    $_SESSION['user_id'] = $row['user_id'];
+                    $_SESSION['role_id'] = $row['role_id'];
+                    //эти данные очень часто используются, вот их и будет "носить с собой" вошедший пользователь
+
+                    header("Location: homepage.php");
+                    exit();
+                } else {
+                    $loginError = "Неправильный логин или пароль.";
+                }
             }
-        }
 
+        }
     }
 }
+
 ?>
 
 <!DOCTYPE html>
@@ -101,18 +104,26 @@ if (empty($email) or empty($password)) //если пользователь не 
 
 <div class="container">
     <form role="form" class="form-horizontal" method="POST">
+
         <div class="form-group row justify-content-center">
-            <label for="inputEmail" class="col-xs-12 col-sm-2 col-md-2 col-lg-1 col-xl-1 col-form-label">Email</label>
-            <div class="col-xs-12 col-sm-9 col-md-6 col-lg-4 col-xl-4">
-                <input type="email" class="form-control" name="email" placeholder="Введите e-mail">
+            <?php if (isset($loginError)) { ?>
+                <div class="alert alert-danger col-xs-12 col-sm-11 col-md-8 col-lg-5" role="alert">
+                     <?php echo $loginError; ?>
+                </div> <?php } ?>
+        </div>
+
+        <div class="form-group row justify-content-center">
+            <label for="inputEmail" class="col-xs-12 col-sm-2 col-md-2 col-lg-1 col-form-label">Email</label>
+            <div class="col-xs-12 col-sm-9 col-md-6 col-lg-4">
+                <input type="email" maxlength="98" class="form-control" name="email" placeholder="Введите e-mail">
             </div>
         </div>
 
         <div class="form-group row justify-content-center">
             <label for="inputPassword"
-                   class="col-xs-12 col-sm-2 col-md-2 col-lg-1 col-xl-1 col-form-label">Пароль</label>
-            <div class="col-xs-12 col-sm-9 col-md-6 col-lg-4 col-xl-4">
-                <input type="password" class="form-control" name="password" placeholder="Введите пароль"
+                   class="col-xs-12 col-sm-2 col-md-2 col-lg-1 col-form-label">Пароль</label>
+            <div class="col-xs-12 col-sm-9 col-md-6 col-lg-4">
+                <input type="password" class="form-control" maxlength="98" name="password" placeholder="Введите пароль"
                        id="inputPassword">
                 <a href="#" class="password-control" onclick="return show_hide_password(this);"></a>
             </div>
@@ -120,8 +131,7 @@ if (empty($email) or empty($password)) //если пользователь не 
 
         <div class="form-group row justify-content-center">
             <div class="col-xs-12 col-sm-11 col-md-8 col-lg-5 col-xl-5">
-                <button name="submit" type="submit"
-                        class="btn btn-primary btn-lg btn-block">Войти
+                <button name="submit" type="submit" class="btn btn-primary btn-lg btn-block">Войти
                 </button>
             </div>
         </div>
@@ -135,11 +145,6 @@ if (empty($email) or empty($password)) //если пользователь не 
             </div>
         </div>
 
-        <div class="form-group row justify-content-center">
-            <div class="col-xs-12 col-sm-11 col-md-8 col-lg-5 col-xl-5">
-                <button type="button" class="btn btn-info btn-lg btn-block">Забыли пароль?</button>
-            </div>
-        </div>
 
     </form>
 
