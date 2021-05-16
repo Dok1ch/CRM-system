@@ -11,7 +11,6 @@ $user_id = $_SESSION['user_id'];
 
 if ($_SESSION['role_id'] == 3) {
     $user_id = $_GET['user_id'];
-
 }
 //извлекаем из базы все данные о пользователе с введенным логином
 $result = mysqli_query($connection, "SELECT u.user_id, u.surname, u.name, u.patronymic, u.email, u.phone, u.role_id, g.group_name, g.id_group FROM users u, t_group g WHERE  u.user_id = '$user_id' LIMIT 1");
@@ -162,7 +161,7 @@ if ($_SESSION['role_id'] == 3) {
                 </div>
 
                 <?php
-                if ($_SESSION['role_id'] == 3 or $_SESSION['user_id'] == 2) {
+                if (($_SESSION['role_id'] == 3 or $_SESSION['user_id'] == 2) AND !empty($patronymic))  {
                    ?> <div class="form-group row text-left">
                         <div class="col-sm-2 col-md-3 col-lg-3"></div>
                         <div class="col-sm-8 col-md-6 col-lg-6"><label>Отчество</label>
@@ -219,7 +218,7 @@ if ($_SESSION['role_id'] == 3) {
 
                                 $get_group = mysqli_query($connection, "SELECT * FROM t_group");
 
-                                echo '<select class="form-control" name="group">';
+                                echo '<select class="form-control" disabled name="group" id="group">';
 
                                 while ($row_group = mysqli_fetch_assoc($get_group)) {
                                     if ($group_id == $row_group['id_group']) {
