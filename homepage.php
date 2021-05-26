@@ -55,7 +55,7 @@ if ($_SESSION['role_id'] == 1) {
         $table .= '<td data-label="Дата занятия:">' . $lessons_array['date'] . '</td>';
 
         //TODO преподаватель должен заполнять посещение и достижения студентов
-        $table .= '<td data-label="Тема урока:"><a href="attendance_teacher.php?id_lesson=' . $lessons_array['id_lesson'] .'">' . $lessons_array['theme'] . '</td>';
+        $table .= '<td data-label="Тема урока:"><a href="attendance.php?id_lesson=' . $lessons_array['id_lesson'] .'">' . $lessons_array['theme'] . '</td>';
         if(!empty($lessons_array['recommendation'])) {
             $recommendation = $lessons_array['recommendation'];
             $table .= '<td data-label="Рекомендация:">' . $recommendation . '</td></tr>';
