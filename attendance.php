@@ -117,9 +117,9 @@ $row = mysqli_fetch_array($result);
 
                     </table>
                     <input class = "btn btn-lg btn-success" type="submit" name="formSubmit" value="<?php
-                    if (!$row_lesson) {
+                    if (!$row_lesson) {                        
                         echo "Сохранить";
-                        } else {
+                        } else {                           
                             echo "Обновить";
                         }
                     ?>" />
@@ -133,15 +133,37 @@ $row = mysqli_fetch_array($result);
                             else $attendance_int = 1;                       
                         $achievement =$_POST["achievement_" . $array_students_id[$i]];
 
-                        /// TODO сделать иф на запись или апдейт
+                        
+                        if (isset($_REQUEST['formSubmit'])) {
                         if (!$row_lesson){   
-                        //echo "Запись новая";                              
-                        $result_send_query = mysqli_query($connection, "INSERT INTO `t_attendance` (`id_student`, `id_lesson`, `attendance`, `achievements`) VALUES ('$array_students_id[$i]', '$lesson_id', '$attendance_int', '$achievement')");
+                        /// создание новой записи                             
+                        if($result_send_query = mysqli_query($connection, "INSERT INTO `t_attendance` (`id_student`, `id_lesson`, `attendance`, `achievements`) VALUES ('$array_students_id[$i]', '$lesson_id', '$attendance_int', '$achievement')")){
+                            $message_allert = "Запись успешно создана";
+                        } else {
+                            $message_allert = "Не удалось создать запись";
+                        }
+                        ?>
+                        <div class="alert">
+                            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                            <?php echo $message_allert; ?>
+                        </div>
+                        <?php
                         } 
                         else {
-                            //echo "Запись уже есть";
-                        $result_send_query = mysqli_query($connection, "UPDATE t_attendance SET attendance = '$attendance_int', achievements = '$achievement' WHERE (id_student = '$array_students_id[$i]' and id_lesson ='$lesson_id')");
+                            /// редактирование записи
+                        if($result_send_query = mysqli_query($connection, "UPDATE t_attendance SET attendance = '$attendance_int', achievements = '$achievement' WHERE (id_student = '$array_students_id[$i]' and id_lesson ='$lesson_id')")){
+                            $message_allert = "Запись успешно изменена";
+                        } else {
+                            $message_allert = "Не удалось изменить запись";
                         }
+
+                        ?>
+                        <div class="alert">
+                            <span class="closebtn" onclick="this.parentElement.style.display='none';">&times;</span>
+                            <?php echo $message_allert; ?>
+                        </div>
+                        <?php
+                        } }
                     }          
                     ?>
 
@@ -164,7 +186,4 @@ $row = mysqli_fetch_array($result);
 <?php
 
 include "include/footer.html";
-
-
-
 ?>
