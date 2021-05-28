@@ -90,12 +90,11 @@ html {
 .nav .open > a:focus {
 
 
-
 }
 
 /* Wrappers */
+
 #wrapper {
-    padding-left: 0;
     -webkit-transition: all 0.5s ease;
     -moz-transition: all 0.5s ease;
     -o-transition: all 0.5s ease;
@@ -396,3 +395,120 @@ html {
 
 /* Конец блока настройки выпадающего меню*/
 
+
+/* Начало блока стилизации таблицы */
+
+table {
+    font-family: "Lucida Sans Unicode", "Lucida Grande", Sans-Serif;
+    font-size: 14px;
+    border-collapse: collapse;
+    text-align: center;
+}
+
+th {
+    background: #7f8be7;
+    color: #ffd890;
+    padding: 10px 20px;
+}
+
+th, td {
+    border-style: solid;
+    border-width: 0 1px 1px 0;
+    border-color: #bfb093;
+}
+
+td {
+    background: #7f8be7;
+}
+
+th:first-child, td:first-child {
+    text-align: left;
+}
+
+/* Конец блока стилизация таблицы */
+
+table.table-3 {
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+}
+
+table.table-3 tr {
+    background-color: #f8f8f8;
+}
+
+table.table-3 th,
+table.table-3 td {
+    text-align: left;
+    padding: 8px;
+    border: 1px solid #ddd;
+}
+
+@media screen and (max-width: 600px) {
+    table.table-3 {
+        border: 0;
+    }
+
+
+    table.table-3 thead {
+        border: none;
+        clip: rect(0 0 0 0);
+        height: 1px;
+        margin: -1px;
+        overflow: hidden;
+        padding: 0;
+        position: absolute;
+        width: 1px;
+    }
+
+    table.table-3 tr {
+        border-bottom: 1px solid #ddd;
+        display: block;
+        margin-bottom: 30px;
+    }
+
+    table.table-3 td {
+        display: block;
+        text-align: right;
+    }
+
+    table.table-3 td::before {
+        content: attr(data-label);
+        float: left;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+
+    table.table-3 td:last-child {
+        border-bottom: 0;
+    }
+}
+
+.link {
+    color: #f6faff;
+}
+
+/* The alert message box */
+.alert {
+    padding: 20px;
+    background-color: #7f8be7; /* Red */
+    color: white;
+    margin-bottom: 15px;
+}
+
+/* The close button */
+.closebtn {
+    margin-left: 15px;
+    color: white;
+    font-weight: bold;
+    float: right;
+    font-size: 22px;
+    line-height: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+/* When moving the mouse over the close button */
+.closebtn:hover {
+    color: black;
+}
