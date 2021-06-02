@@ -67,12 +67,14 @@ $row = mysqli_fetch_array($result);
                             //echo $lesson_id;
                             
                             /// проверка на существование записи с текущим уроком в базе                                              
-                            $result_attendance = mysqli_query($connection, "SELECT DISTINCT a.id_student, a.achievements  FROM t_attendance a WHERE a.id_lesson = '$lesson_id'");
+                            $result_attendance = mysqli_query($connection, "SELECT DISTINCT a.id_student, a.achievements, a.attendance  FROM t_attendance a WHERE a.id_lesson = '$lesson_id'");
                             $row_att = array(array());
                             $i = 0;
                             /// запись в массив студентов с отметкой о занятии
                             while ($row_att[$i] = mysqli_fetch_assoc($result_attendance)) {
+                                echo $lesson_id.":". $row_att[$i]['id_student'].":".$row_att[$i]['achievements']. " ";
                                 $i++;
+
 
                             }
                             /// сама проверка
@@ -95,16 +97,22 @@ $row = mysqli_fetch_array($result);
 
                         <tr>
                             <td scope="row">
+                            <!-- ВЫВОД ТАБЛИЦЫ -->
                                 <input type="checkbox" name="<?php echo "student_" . $row_users['user_id'] ?>" checked><?php
                                 // вывод учеников с чекбоксом
                                 echo $row_users['name'] . " " . $row_users['surname'];
+                                /// сделать иф. если 
                             ?></td>
                             <td><input class = form-control type="text" name="<?php echo "achievement_" . $row_users['user_id'] ?>" value="<?php
                             if ($row_lesson){
                                 for ($i = 0; $i < count($row_att); $i++){
-                                    if ($row_users['user_id'] == $row_att[i]['id_student']){
-                                        echo "helo";
+                                    // неверное условие
+                                    // $row_att[i]['id_student'] всегда пустое
+                                    if ($row_users['user_id'] == $row_att[$i]['id_student']){
+                                        /// вывод достижений
+                                        echo $row_att[$i]['achievements'];
                                     }
+
                                 }
                             }
 
