@@ -71,11 +71,8 @@ $row = mysqli_fetch_array($result);
                             $row_att = array(array());
                             $i = 0;
                             /// запись в массив студентов с отметкой о занятии
-                            while ($row_att[$i] = mysqli_fetch_assoc($result_attendance)) {
-                                echo $lesson_id.":". $row_att[$i]['id_student'].":".$row_att[$i]['achievements']. " ";
+                            while ($row_att[$i] = mysqli_fetch_assoc($result_attendance)) {                                
                                 $i++;
-
-
                             }
                             /// сама проверка
                             if ($row_att[0]['id_student']){
@@ -98,7 +95,20 @@ $row = mysqli_fetch_array($result);
                         <tr>
                             <td scope="row">
                             <!-- ВЫВОД ТАБЛИЦЫ -->
-                                <input type="checkbox" name="<?php echo "student_" . $row_users['user_id'] ?>" checked><?php
+                                <input type="checkbox" name="<?php echo "student_" . $row_users['user_id'] ?>" <?php
+                            if ($row_lesson){
+                                for ($i = 0; $i < count($row_att); $i++){
+                                    // работает
+                                    if ($row_users['user_id'] == $row_att[$i]['id_student']){
+                                        /// вывод достижений
+                                        if ($row_att[$i]['attendance'] == 1) {
+                                            ?> checked <?php
+                                        }
+                                    }
+
+                                }
+                            }
+                            ?> ><?php
                                 // вывод учеников с чекбоксом
                                 echo $row_users['name'] . " " . $row_users['surname'];
                                 /// сделать иф. если 
@@ -106,8 +116,7 @@ $row = mysqli_fetch_array($result);
                             <td><input class = form-control type="text" name="<?php echo "achievement_" . $row_users['user_id'] ?>" value="<?php
                             if ($row_lesson){
                                 for ($i = 0; $i < count($row_att); $i++){
-                                    // неверное условие
-                                    // $row_att[i]['id_student'] всегда пустое
+                                    // работает
                                     if ($row_users['user_id'] == $row_att[$i]['id_student']){
                                         /// вывод достижений
                                         echo $row_att[$i]['achievements'];
@@ -115,7 +124,6 @@ $row = mysqli_fetch_array($result);
 
                                 }
                             }
-
                             ?>" size="40"><?php
                                 // запись достижений                            
                             ?></td>         
